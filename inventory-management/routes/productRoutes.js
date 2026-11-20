@@ -10,22 +10,26 @@ const {
   getLowStockReport,
   getCategorySummary
 } = require('../controllers/productController');
+const {
+  validateObjectId,
+  validateProductInput,
+  validateStockInput
+} = require('../middleware/validateInput');
 
 
 router.get('/low-stock', getLowStockReport);
 router.get('/summary', getCategorySummary);
 
-
 router.route('/')
   .get(getProducts)
-  .post(createProduct);
+  .post(validateProductInput, createProduct);
 
 router.route('/:id')
-  .get(getProductById)
-  .put(updateProduct)
-  .delete(deleteProduct);
+  .get(validateObjectId, getProductById)
+  .put(validateObjectId, validateProductInput, updateProduct)
+  .delete(validateObjectId, deleteProduct);
 
 
-router.patch('/:id/stock', adjustStock);
+router.patch('/:id/stock', validateObjectId, validateStockInput, adjustStock);
 
 module.exports = router;
